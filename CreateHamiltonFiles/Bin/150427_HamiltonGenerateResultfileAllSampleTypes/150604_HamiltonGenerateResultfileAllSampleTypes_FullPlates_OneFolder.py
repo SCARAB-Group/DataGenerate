@@ -10,10 +10,12 @@ import os
 #Main
 print "##########################################################"
 
-nrOfFolders = 15
-origLabelID_orig = "L01_"
-path_result_orig = '../../Result/GeneratadCSVFiles150930_L01_'
-fileNamePrefix_orig = "Result_2015_09_30_01_01_"
+nrOfFolders = 4
+origLabelID_orig = "U01_"
+#path_result_orig = '../../Result/GeneratadCSVFiles150930_L01_'
+path_result_orig = '../../Result/'
+
+fileNamePrefix_orig = "Result_XX_09_30_01_01_"
 plateTemplate_orig = "_L01_0930_"
 
 sampleTemplate = "q"
@@ -173,8 +175,12 @@ methodList =[
 
 
 for curFolderIndex in range(nrOfFolders):
-    path_result = path_result_orig + str(curFolderIndex) + "/"
-    fileNamePrefix = fileNamePrefix_orig + str(curFolderIndex) + "_"
+    #path_result = path_result_orig + str(curFolderIndex) + "/"
+    path_result = path_result_orig + robotIDArray[curFolderIndex] + "/"
+
+    #fileNamePrefix = fileNamePrefix_orig
+    fileNamePrefix = fileNamePrefix_orig.replace("XX", origLabelID_orig) #+ str(curFolderIndex) + "_"
+   # print "FilenamePrefix", fileNamePrefix
     
     origLabelID = origLabelID_orig + str(curFolderIndex) + "_"
     plateTemplate = plateTemplate_orig + str(curFolderIndex) + "_"
@@ -202,7 +208,11 @@ for curFolderIndex in range(nrOfFolders):
         curPlate = plateTemplate + str(curFileIndex)
 
         #filename_out = path_result + "Result" + str(1200 + curFileIndex) + "_01_01_01_01_01.csv"
-        filename_out = path_result + fileNamePrefix + str(curFileIndex)  + ".csv"
+        #print "pathresult", path_result
+        filename_out = path_result +  str(fileNamePrefix) + str(curFileIndex) + str(curFolderIndex)  + ".csv"
+
+
+        
         #curMotherSampleIndex = nrOfMotherSamplesList[curFileIndex]
 
         with open(filename_out, 'wb') as csvfile:
