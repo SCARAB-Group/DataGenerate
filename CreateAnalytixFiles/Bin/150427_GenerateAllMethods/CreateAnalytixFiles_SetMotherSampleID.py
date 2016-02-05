@@ -6,16 +6,67 @@ import time
 import os
 
 
-#path_result_orig = '../../Result/Generated_XMLfiles_150623_A01_'
-path_result_orig = '../../Result/'
+###############################
+#  Brief instructions
+# - Add list of mother samples and method codes in list motherSampleList
+# - Run script 
+# - order files in analytix format will be generated in Result folder
 
-fileNamePrefix_orig = "MethodTests150625_01_"
-origRid_orig = "A0625_"
-sampleTemplate_orig = "A0625_"
-  
-sampleDrawtime = "20150625081001"
-nrOfFolders = 9
+## Input fields##
+## List of mother samples
 
+
+motherSamplesList =[
+'13008906W6',
+'13008906W8',
+'13008906W9',
+'13008906WA',
+'13008906WD',
+'13008906WG',
+'13008906WH',
+'13008906WI',
+'13008906WK',
+'13008906WN',
+'13008906WT',
+'13008906WU',
+'13008931V7',
+'13008931V8',
+'13008931V9',
+'13008931VA',
+'13008931VT',
+'13008931VU',
+'13008936Y6',
+'13008936Y8',
+'13008936Y9',
+'13008936YA',
+'13008936YC',
+'13008936YD',
+'13008936YF',
+'13008936YG',
+'13008936YL'    
+]
+
+
+
+
+##motherSamplesList =[
+##    ['M160205_01', ['BBKZEP', 'ZP'] ],
+##    ['M160205_02', ['BBKZEP', 'ZP']],
+##    ['M160205_03', ['BBKZC', 'ZC']],
+##    ['M160205_04', ['BBKZC', 'ZC']],
+##]
+
+
+## Default parameters
+path_result_orig = '../../Result/'  # Path generated order files
+fileNamePrefix_orig = "MethodTests150625_01_" # Filename order prefix
+origRid_orig = "A0625_" # RID prefix
+#sampleTemplate_orig = "A0625_"
+sampleDrawtime = "20150625081001" # Sample draw time  
+nrOfFolders = 1 # Number of folders
+
+################################
+## XML text to be concatenated
 xmltext_1 = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n<!DOCTYPE SafirMessage SYSTEM \"8REQW.dtd\">\n<SafirMessage>\n<Envelope>\n<Message ID=\"R5V919AC\" Type=\"REQ\" Origin=\"EDI\" Version=\"008\"/>\n<FromSystem ID=\"KUL:30:S1037\"/>\n<ToSystem ID=\"S9416\"/>\n<Sent DateTime=\"20130612015615\"/>\n</Envelope>\n<Requisition Status=\"N\" GUID=\"05D461B9-8335-4FAE-9C49-7FBBA315CAAC\" ReqType=\"TubeCode\" RequisitionID=\""
 xmltext_2 ="\" ExternalRequisitionID=\"324234333\" CareType=\"S\">\n<ReqComment Type=\"RP\" Text=\"Remitent Bibbisvar test1 fakt test2\"/>\n<ReqInformation Code=\"UBBK1\" Value=\"1\"/>\n<Patient PatientID=\"19121212-1212\" Surname=\"ERIK1\" FirstName=\"ERIKSSON1\" Sex=\"M\" BirthDate=\"19180306\" GivenNameQualifier=\"\" Address=\"TOLVAR STIGEN\" PostalCode=\"123 45\" PostalAddress=\"STOCKHOLM\" Country=\"SV\" District=\"0180\" Telephone=\"\" SocialInsuranceOffice=\"\" Comment=\"\" Secrecy=\"N\"/>\n<Biobank Concent=\"01\"/>\n<ReqUnit AddressCode=\"req_110026830\" Name1=\"Karolinska Huddinge\" Name2=\"Best‰llarorg IT;Testkod 1\" Address=\"C1 81\" PostalAddress=\"141 86 Stockholm\" ContactPerson=\"Bibbi Olofsson\" ContactId=\"\" TelephoneNumber=\"\"/>\n<PayUnit AddressCode=\"pay_110026831\" Name1=\"Karolinska Huddinge\" Name2=\"Best‰llarorg IT;Testkod 2\" Address=\"C1 81\" PostalAddress=\"141 86 Stockholm\" ContactPerson=\"\" TelephoneNumber=\"\"/>\n<CopyUnit1 AddressCode=\"Copy_110026830\" Name1=\"Karolinska Huddinge\" Name2=\"Best‰llarorg IT;Testkod 1\" Address=\"C1 81\" PostalAddress=\"141 86 Stockholm\" ContactPerson=\"\" TelephoneNumber=\"\"/>\n"
 
@@ -38,6 +89,15 @@ def read_file(filename):
 
 def create_labelList(start,stop,step):
     return range(start,stop,step) 
+
+
+def getMethodCode(labelName, methodList):
+    for item in methodList:
+        #print labelName, item[1], labelName[-2:]
+        if item[1] == labelName[-2:]:
+            return item[0]
+    return methodList[1][0]
+
     
 ###################################################
 #Main
@@ -170,35 +230,6 @@ methodList =[
 
 
 
-##
-##
-##
-##
-##ridList = create_labelList(88880001,88880013,1)
-##sampExt01 = ['Z','Y','V','W'] 
-###sampExt02 = ['P','C','L','N','S','G','U','T','A']
-##
-##sampExt02 = [
-##['EB', 'B'],
-##['EP', 'P'] ,
-##['C',  'C'],
-##['LHG','L'],
-##['NH', 'N'] ,
-##['S', 'S'] ,
-##['SG', 'G'] ,
-##['U', 'U'] ,
-##['S10', 'T'], 
-##['E10', 'A'] ]
-##
-##
-
-
-#path_result_orig = '../../Result/Generated_XMLfiles_150513_'
-#fileNamePrefix_orig = "MethodTests150513_"
-#origRid_orig = "S0513_"
-#sampleTemplate_orig = "S0513_"
-
-
 
 for curFolderIndex in range(nrOfFolders):
     #path_result = path_result_orig + str(curFolderIndex) + "/"
@@ -206,29 +237,30 @@ for curFolderIndex in range(nrOfFolders):
     print path_result
     fileNamePrefix = fileNamePrefix_orig + str(curFolderIndex) + "_"
     origRid = origRid_orig + str(curFolderIndex) + "_"
-    sampleTemplate = sampleTemplate_orig + str(curFolderIndex) + "_"
+    #sampleTemplate = sampleTemplate_orig + str(curFolderIndex) + "_"
 
     if not os.path.exists(path_result):
-        
         os.makedirs(path_result)
 
-    
-    
     #curDate = (time.strftime("%Y%m%d"))
     i = 0
-    for curSample in methodList:
-        curRid = origRid + curSample[0]
+    for curSample in motherSamplesList:
+        methodCode = getMethodCode(curSample, methodList)
+
         
-        print str("Current sample: " + curSample[0] + "  " + sampleTemplate + curSample[1])
+        curRid = origRid + curSample
+        
+        print str("Current sample: " + curSample)
         print str("Current Rid: " + curRid)
+    
         i = i + 1
         xmlText = xmltext_1 + str(curRid) + xmltext_2
-        #xmlText = xmlText + xmltext_3 + sampleTemplate + curSample[1] + xmltext_4 + curSample[0] + xmltext_5 + xmltext_6    
-        xmlText = xmlText + xmltext_3 + sampleTemplate + curSample[0] + curSample[1] + xmltext_4 + curSample[0] + xmltext_5 + xmltext_6    
+        #xmlText = xmlText + xmltext_3 + sampleTemplate + curSample[0] + curSample[1] + xmltext_4 + curSample[0] + xmltext_5 + xmltext_6    
+        xmlText = xmlText + xmltext_3 + curSample + xmltext_4 + methodCode + xmltext_5 + xmltext_6    
 
 
         
-        filename_out = path_result + fileNamePrefix + str(i) + "_" + sampleTemplate + str(curSample[1]) + "_" + str(curSample[0]) + ".xml"
+        filename_out = path_result + fileNamePrefix + str(i) + "_" + curSample + "_" + str(curSample) + ".xml"
         f = open(filename_out, 'w')
         f.write(xmlText)
         f.close()
@@ -236,3 +268,5 @@ for curFolderIndex in range(nrOfFolders):
     
 
     
+
+
