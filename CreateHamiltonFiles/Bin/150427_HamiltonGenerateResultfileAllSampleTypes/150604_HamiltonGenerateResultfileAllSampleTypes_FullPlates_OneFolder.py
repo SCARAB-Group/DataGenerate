@@ -11,15 +11,15 @@ import os
 print "##########################################################"
 
 nrOfFolders = 4
-origLabelID_orig = "U01_"
+origLabelID_orig = "A1118_"
 #path_result_orig = '../../Result/GeneratadCSVFiles150930_L01_'
 path_result_orig = '../../Result/'
 
-fileNamePrefix_orig = "Result_XX_09_30_01_01_"
-plateTemplate_orig = "_L01_0930_"
+fileNamePrefix_orig = "Result_16_11_27_01_01_01_"
+plateTemplate_orig = "_A01_1127_"
 
 sampleTemplate = "q"
-batchID = "15093001"
+batchID = "16112701"
 
 #robotID = "SN6268"
 #robotID = "SN6658"
